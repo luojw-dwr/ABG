@@ -67,7 +67,15 @@ def parseFIFO(path_proj, name_top, vnode):
             instance_write_name = re.match("[a-zA-Z_0-9]*_U[0-9]*", vnode_port.argname.name).group()
     return ModuleEdge(module_name, instance_name, width, depth, instance_read_name, instance_write_name)
 
-def parseTopV(path_proj, name_top):
+def parseApp(path_app):
+    xnode_root = xparse(path_app)
+    xnode_project = xnode_root.getElementsByTagName("AutoPilot:project")[0]
+    name_top = xnode_project.getAttribute("top")
+    return name_top
+
+def parseTopV(path_proj):
+    path_app = os.path.join(path_proj, "vivado_hls.app")
+    name_top = parseApp(path_app)
     path_src = os.path.join(path_proj, "solution/syn/verilog/")
     path_top = os.path.join(path_src, f"{name_top}_{name_top}.v")
     ast, directives = vparse((path_top,))
