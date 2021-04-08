@@ -7,7 +7,7 @@ from floorplan.abgE import abgE
 
 import numpy as np
 
-mg = parseTopV("assets/kernel3_u250/")
+vhandle, mg = parseTopV("assets/kernel3_u250/")
 gg = parseGridCSV("assets/floorplan/U250.csv")
 
 dfr = moduleGraphToDataflowRepresentation(mg)

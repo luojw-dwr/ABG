@@ -11,7 +11,8 @@ from pyverilog.vparser.parser import parse as vparse
 from xml.dom import minidom
 from xml.dom.minidom import parse as xparse
 
-from .ModuleGraph import *
+from .VHandle import VHandle
+from .ModuleGraph import ModuleGraph, ModuleVertex, ModuleEdge
 
 def do_dfs(node, visited, f):
     if (node not in visited):
@@ -78,7 +79,7 @@ def parseTopV(path_proj):
     name_top = parseApp(path_app)
     path_src = os.path.join(path_proj, "solution/syn/verilog/")
     path_top = os.path.join(path_src, f"{name_top}_{name_top}.v")
-    ast, directives = vparse((path_top,))
+    vnode_root, directives = vparse((path_top,))
     def gen_collectFIFO(name_top, lst):
         prefix_fifo = f"{name_top}_fifo"
         def collectFIFO(node):
@@ -92,11 +93,10 @@ def parseTopV(path_proj):
                 lst.append(node)
         return collectPE
     vnodes_pe, vnodes_fifo = deque(), deque()
-    dfs(ast,
+    dfs(vnode_root,
         mkParallel(
             gen_collectPE(name_top, vnodes_pe),
             gen_collectFIFO(name_top, vnodes_fifo)))
     mnodes = [parsePE(path_proj, name_top, vnode_pe) for vnode_pe in vnodes_pe]
     medges = [parseFIFO(path_proj, name_top, vnode_fifo) for vnode_fifo in vnodes_fifo]
-    return ModuleGraph(V=mnodes, E=medges)
-
+    return VHandle(vnode_root, vnodes_pe, vnodes_fifo), ModuleGraph(V=mnodes, E=medges)
