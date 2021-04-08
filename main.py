@@ -2,7 +2,6 @@ from frontend.ParseV import *
 from frontend.ParseCSV import *
 from transform.ModuleGraphToDataflowRepresentation import *
 from transform.GridGraphToSlotRepresentation import *
-from floorplan.abgV import abgV
 from floorplan.abgE import abgE
 
 import numpy as np
