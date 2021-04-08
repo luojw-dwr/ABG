@@ -16,7 +16,7 @@ def moduleGraphToDataflowRepresentation(mg):
         for (idx_v, v) in enumerate(V):
             As_DG[idx_k, idx_v] = v.area[k]
     for e in E:
-        W_DG[vertex2idx[V_dict[e.instance_read_name]], vertex2idx[V_dict[e.instance_write_name]]] += e.width * e.depth
+        W_DG[vertex2idx[V_dict[e.instance_read_name]], vertex2idx[V_dict[e.instance_write_name]]] += e.width
     W_DG += W_DG.T
     return DataflowRepresentation(V, A, As_DG, W_DG)
 
