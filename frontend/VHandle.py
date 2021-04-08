@@ -19,12 +19,16 @@ class VHandle:
         logging.info(f"Modified Top Module Name: {self.vnode_moduleDef.name}")
         for vnode_fifoInst in self.vnodes_fifoInst:
             vnode_fifo = next(filter(lambda node : isinstance(node, vast.Instance), vnode_fifoInst.children()))
+            assert(vnode_fifoInst.module == vnode_fifo.module)
             logging.info(f"Original FIFO Module Name for Instance {vnode_fifo.name}: {vnode_fifo.module}")
             vnode_fifoInst.module = vnode_fifo.name + "_M"
             vnode_fifo.module = vnode_fifo.name + "_M"
+            assert(vnode_fifoInst.module == vnode_fifo.module)
             logging.info(f"Modified FIFO Module Name for Instance {vnode_fifo.name}: {vnode_fifo.module}")
     def toRTL(self):
         # may involve deep recursion...
         # due to impl. of pyverilog ASTCodeGenerator ...
         # which is a recursive DFS
-        return VGen().visit(self.vnode_moduleDef)
+        top_module_name = self.vnode_moduleDef.name
+        rtl = VGen().visit(self.vnode_moduleDef)
+        return top_module_name, rtl
