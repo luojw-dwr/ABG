@@ -1,7 +1,7 @@
 import os
-import sys
-sys.setrecursionlimit(100000)
+
 from collections import deque, defaultdict
+from .DfsV import dfsV
 
 import re
 
@@ -26,9 +26,9 @@ def do_dfs(node, visited, f):
 def dfs(node, f):
     do_dfs(node, set(), f)
 
-def mkParallel(f, g):
+def mkParallel(*fs):
     def h(x):
-        f(x), g(x)
+        [f(x) for f in fs]
     return h
 
 def parsePE(path_proj, name_top, vnode):
@@ -80,23 +80,30 @@ def parseTopV(path_proj):
     path_src = os.path.join(path_proj, "solution/syn/verilog/")
     path_top = os.path.join(path_src, f"{name_top}_{name_top}.v")
     vnode_root, directives = vparse((path_top,))
-    def gen_collectFIFO(name_top, lst):
-        prefix_fifo = f"{name_top}_fifo"
-        def collectFIFO(node):
-            if isinstance(node, vast.Instance) and node.module.startswith(prefix_fifo):
-                lst.append(node)
-        return collectFIFO
     def gen_collectPE(name_top, lst):
         prefix_fifo = f"{name_top}_fifo"
         def collectPE(node):
             if isinstance(node, vast.Instance) and (not node.module.startswith(prefix_fifo)):
                 lst.append(node)
         return collectPE
-    vnodes_pe, vnodes_fifo = deque(), deque()
-    dfs(vnode_root,
+    def gen_collectFIFO(name_top, lst):
+        prefix_fifo = f"{name_top}_fifo"
+        def collectFIFO(node):
+            if isinstance(node, vast.Instance) and node.module.startswith(prefix_fifo):
+                lst.append(node)
+        return collectFIFO
+    def gen_collectFIFOInstantiationSite(name_top, lst):
+        prefix_fifo = f"{name_top}_fifo"
+        def collectFIFOInstantiationSite(node):
+            if isinstance(node, vast.InstanceList) and node.module.startswith(prefix_fifo):
+                lst.append(node)
+        return collectFIFOInstantiationSite
+    vnodes_pe, vnodes_fifo, vnodes_fifoInst = deque(), deque(), deque()
+    dfsV(vnode_root,
         mkParallel(
             gen_collectPE(name_top, vnodes_pe),
-            gen_collectFIFO(name_top, vnodes_fifo)))
+            gen_collectFIFO(name_top, vnodes_fifo),
+            gen_collectFIFOInstantiationSite(name_top, vnodes_fifoInst)))
     mnodes = [parsePE(path_proj, name_top, vnode_pe) for vnode_pe in vnodes_pe]
     medges = [parseFIFO(path_proj, name_top, vnode_fifo) for vnode_fifo in vnodes_fifo]
-    return VHandle(vnode_root, vnodes_pe, vnodes_fifo), ModuleGraph(V=mnodes, E=medges)
+    return VHandle(vnode_root, vnodes_pe, vnodes_fifo, vnodes_fifoInst), ModuleGraph(V=mnodes, E=medges)
