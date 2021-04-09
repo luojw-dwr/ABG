@@ -3,6 +3,7 @@ from frontend.ParseCSV import *
 from transform.ModuleGraphToDataflowRepresentation import *
 from transform.GridGraphToSlotRepresentation import *
 from transform.ModuleGraphToDataflowGraph import *
+from transform.GridGraphToSlotGraph import *
 from floorplan.abgE import abgE
 
 import numpy as np
@@ -14,6 +15,7 @@ dfr = moduleGraphToDataflowRepresentation(mg)
 sr = gridGraphToSlotRepresentation(gg)
 
 dg = moduleGraphToDataflowGraph(mg)
+sg = gridGraphToSlotGraph(gg)
 
 PhiE, PhiV = abgE(dfr.n_DG, sr.n_SG, dfr.As_DG, sr.As_SG, dfr.W_DG, sr.W_SG, 0.85 * np.ones(sr.n_SG))
 
