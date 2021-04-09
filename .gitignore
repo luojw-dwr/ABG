@@ -3,3 +3,4 @@ assets
 build
 parser.out
 parsetab.py
+*.swp
