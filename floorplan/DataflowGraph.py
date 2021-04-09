@@ -17,6 +17,7 @@ class DataflowEdge:
 class DataflowGraph:
     def __init__(self, V, E):
         self.V = V
+        self.V_dict = {v.v_mg.instance_name : v for v in self.V}
         self.E = E
     def __repr__(self):
         return f"DataflowGraph(V={self.V}, E={self.E})"

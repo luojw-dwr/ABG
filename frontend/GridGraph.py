@@ -10,6 +10,6 @@ class GridVertex:
 class GridGraph:
     def __init__(self, V):
         self.V = V
-        self.V_dict = {(v.X, v.Y) : v for v in V}
+        self.V_dict = {v.name : v for v in V}
     def __repr__(self):
         return f"GridGraph(V={self.V}, V_dict={self.V_dict})"

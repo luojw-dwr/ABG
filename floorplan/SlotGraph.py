@@ -16,6 +16,7 @@ class SlotEdge:
 class SlotGraph:
     def __init__(self, V, E):
         self.V = V
+        self.V_dict = {v.name : V for v in V}
         self.E = E
     def __repr__(self):
         return f"SlotGraph(V={self.V}, E={self.E})"
