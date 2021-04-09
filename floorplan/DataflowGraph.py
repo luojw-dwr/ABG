@@ -5,14 +5,14 @@ class DataflowVertex:
         return f"DataflowVertex(v_mg={self.v_mg})"
 
 class DataflowEdge:
-    def __init__(self, src, dst, es_mg_sd, es_mg_ds, w):
-        self.src = src
-        self.dst = dst
+    def __init__(self, srcIdx, dstIdx, es_mg_sd, es_mg_ds, w):
+        self.srcIdx = srcIdx
+        self.dstIdx = dstIdx
         self.es_mg_sd = es_mg_sd
         self.es_mg_ds = es_mg_ds
         self.w = w
     def __repr__(self):
-        return f"DataflowEdge(src={self.src}, dst={self.dst}, es_mg_sd={self.es_mg_sd}, es_mg_ds={self.es_mg_ds}, w={self.w})"
+        return f"DataflowEdge(srcIdx={self.srcIdx}, dstIdx={self.dstIdx}, es_mg_sd={self.es_mg_sd}, es_mg_ds={self.es_mg_ds}, w={self.w})"
 
 class DataflowGraph:
     def __init__(self, V, E):
