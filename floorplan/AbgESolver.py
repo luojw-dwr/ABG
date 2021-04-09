@@ -60,4 +60,14 @@ class AbgESolver:
         solution = np.array(m.getAttr("X"), dtype=np.int)
         solution_PhiV = solution[:(nV_SG * nV_DG)].reshape((nV_SG, nV_DG))
         solution_PhiE = solution[(nV_SG * nV_DG):].reshape((nE_SG, nE_DG))
-        return (solution_PhiE, solution_PhiV)
+        return (solution_PhiV, solution_PhiE)
+    def resolveMap(self, PhiV, PhiE):
+        Vmap = {
+            v_DG : self.sg.V[np.where(PhiV[:, vIdx_DG] == 1)[0][0]]
+            for vIdx_DG, v_DG in enumerate(self.dg.V)
+        }
+        Emap = {
+            e_DG : self.sg.E[np.where(PhiE[:, eIdx_DG] == 1)[0][0]]
+            for eIdx_DG, e_DG in enumerate(self.dg.E)
+        }
+        return Vmap, Emap

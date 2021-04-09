@@ -3,7 +3,7 @@ class SlotVertex:
         self.name = name
         self.area = area
     def __repr__(self):
-        return f"SlotVertex(v={self.v}, name={self.name}, area={self.area})"
+        return f"SlotVertex(name={self.name}, area={self.area})"
 
 class SlotEdge:
     def __init__(self, srcIdx, dstIdx, w):

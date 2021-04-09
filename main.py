@@ -14,7 +14,10 @@ gg = parseGridCSV("assets/floorplan/U250.csv")
 dg = moduleGraphToDataflowGraph(mg)
 sg = gridGraphToSlotGraph(gg)
 
-PhiV, PhiE = AbgESolver(dg, sg, defaultdict(lambda:0.85), None).solve()
+abgESolver = AbgESolver(dg, sg, defaultdict(lambda:0.85), None)
+PhiV, PhiE = abgESolver.solve()
+gMap = abgESolver.resolveMap(PhiV, PhiE)
+print(gMap)
 
 np.savetxt("build/PhiE.csv", PhiE, fmt="%d")
 np.savetxt("build/PhiV.csv", PhiV, fmt="%d")
