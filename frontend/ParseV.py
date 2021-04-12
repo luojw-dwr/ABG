@@ -1,6 +1,6 @@
 import os
 
-from collections import deque, defaultdict
+from collections import deque
 from .DfsV import dfsV
 
 import re
@@ -36,19 +36,16 @@ def parsePE(path_proj, name_top, vnode):
     func_name = vnode.module[len(name_top)+1:]
     module_name = vnode.module
     instance_name = vnode.name
-    if "axi" in name_pe:
-        area_dict = defaultdict(int)
-    else:
-        path_rpt = os.path.join(path_proj, "solution/syn/report/")
-        path_xml = os.path.join(path_rpt, f"{name_pe}_csynth.xml")
-        xnode_root = xparse(path_xml)
-        xnode_Resources = xnode_root.getElementsByTagName("Resources")[0]
-        area_dict = dict()
-        for xnode_r in xnode_Resources.childNodes:
-            if xnode_r.nodeType == minidom.Node.ELEMENT_NODE:
-                k = xnode_r.nodeName.upper()
-                v = int(xnode_r.firstChild.nodeValue)
-                area_dict[k] = v
+    path_rpt = os.path.join(path_proj, "solution/syn/report/")
+    path_xml = os.path.join(path_rpt, f"{name_pe}_csynth.xml")
+    xnode_root = xparse(path_xml)
+    xnode_Resources = xnode_root.getElementsByTagName("Resources")[0]
+    area_dict = dict()
+    for xnode_r in xnode_Resources.childNodes:
+        if xnode_r.nodeType == minidom.Node.ELEMENT_NODE:
+            k = xnode_r.nodeName.upper()
+            v = int(xnode_r.firstChild.nodeValue)
+            area_dict[k] = v
     return ModuleVertex(func_name, module_name, instance_name, area_dict)
 
 def parseFIFO(path_proj, name_top, vnode):
@@ -83,7 +80,7 @@ def parseTopV(path_proj):
     def gen_collectPE(name_top, lst):
         prefix_fifo = f"{name_top}_fifo"
         def collectPE(node):
-            if isinstance(node, vast.Instance) and (not node.module.startswith(prefix_fifo)):
+            if isinstance(node, vast.Instance) and (not node.module.startswith(prefix_fifo)) and ("axi" not in node.module):
                 lst.append(node)
         return collectPE
     def gen_collectFIFO(name_top, lst):
