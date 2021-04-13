@@ -10,9 +10,11 @@ import numpy as np
 from collections import defaultdict
 
 import logging
-
 logger = logging.getLogger("ABG_main")
 logger.setLevel(logging.INFO)
+logHandler = logging.StreamHandler()
+logHandler.setFormatter(logging.Formatter(logging.BASIC_FORMAT, None))
+logger.addHandler(logHandler)
 
 logger.info("[Op Phase] Parse assets.")
 vhandle, mg = parseTopV("assets/kernel3_u250/")
@@ -29,6 +31,7 @@ vMap, eMap = abgESolver.resolveMap(PhiV, PhiE)
 
 logger.info("[Op Phase] Construct LatRebal problem.")
 lg_raw = dataflowGraphToLatencyGraph(dg, sg, eMap)
+lg_ss = lg_raw.withVirtualSS()
 
 logger.info("[Op Phase] Generate optimized RTL.")
 vhandle.toCustomizedNames()

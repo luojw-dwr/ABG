@@ -1,4 +1,5 @@
 from collections import deque
+from copy import deepcopy
 
 class LatencyEdge:
     def __init__(self, components, srcName, dstName, w, lat, bal):
@@ -37,3 +38,28 @@ class LatencyGraph:
         self.Edict[(srcName, dstName)] = e
         self.Vdict[srcName].sinkNames.append(dstName)
         self.Vdict[dstName].sourceNames.append(srcName)
+    def withVirtualSS(self):
+        lg = LatencyGraph()
+        lg.V = self.V.copy()
+        lg.Vdict = self.Vdict.copy()
+        lg.E = self.E.copy()
+        lg.Edict = self.Edict.copy()
+        lg.addVertex("__virt_source__")
+        lg.addVertex("__virt_sink__")
+        for (vIdx, v) in enumerate(self.V):
+            isSource = (len(v.sourceNames) == 0)
+            isSink = (len(v.sinkNames) == 0)
+            if isSource or isSink:
+                v_alt = LatencyVertex(v.name)
+                lg.V[vIdx] = v_alt
+                lg.Vdict[v.name] = v_alt
+                if isSource:
+                    v_alt.sourceNames = v.sourceNames.copy()
+                    lg.addEdge([], "__virt_source__", v.name, 0, 0, 0)
+                else:
+                    v_alt.sourceNames = v.sourceNames
+                if isSink:
+                    v_alt.sinkNames = v.sinkNames.copy()
+                    lg.addEdge([], v.name, "__virt_sink__", 0, 0, 0)
+                else:
+                    v_alt.sinkNames = v.sinkNames
