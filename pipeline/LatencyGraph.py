@@ -63,3 +63,4 @@ class LatencyGraph:
                     lg.addEdge([], v.name, "__virt_sink__", 0, 0, 0)
                 else:
                     v_alt.sinkNames = v.sinkNames
+        return lg
