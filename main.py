@@ -29,10 +29,8 @@ logger.info("[Op Phase] Solve AbgE problem.")
 PhiV, PhiE = abgESolver.solve()
 vMap, eMap = abgESolver.resolveMap(PhiV, PhiE)
 
-logger.info("[Op Phase] Resolve reconvergent paths.")
+logger.info("[Op Phase] Construct LatRebal problem.")
 lg_raw = dataflowGraphToLatencyGraph(dg, sg, eMap)
-rps = lg_raw.reconvergentPathsToVirtSink()
-#logger.info("[Op Phase] Construct LatRebal problem.")
 
 logger.info("[Op Phase] Generate optimized RTL.")
 vhandle.toCustomizedNames()
