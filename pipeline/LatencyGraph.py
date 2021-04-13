@@ -1,4 +1,5 @@
 from collections import deque
+from collections import defaultdict
 from copy import deepcopy
 
 class LatencyEdge:
@@ -64,3 +65,26 @@ class LatencyGraph:
                 else:
                     v_alt.sinkNames = v.sinkNames
         return lg
+    def pathsBetween(self, srcName, sinkName, mem):
+        if srcName in mem and sinkName in mem[srcName]:
+            return mem[srcName][sinkName]
+        if srcName == sinkName:
+            ret = True, [deque()]
+        else:
+            ret_paths = deque()
+            def extendLeft(xs, x):
+                ys = xs.copy()
+                ys.appendleft(x)
+                return ys
+            for nodeName in self.Vdict[srcName].sinkNames:
+                reached, paths = self.pathsBetween(nodeName, sinkName, mem)
+                if reached:
+                    ret_paths.extend([extendLeft(path, self.Edict[(srcName, nodeName)]) for path in paths])
+            ret = (len(ret_paths) > 0), ret_paths
+        mem[srcName][sinkName] = ret
+        return ret
+    def reconvergentPathsToVirtSink(self):
+        lg = self.withVirtualSS()
+        mem = defaultdict(lambda:defaultdict(lambda:None))
+        reached, paths = lg.pathsBetween("__virt_source__", "__virt_sink__", mem)
+        return [mem[vName]["__virt_sink__"] for vName in self.Vdict]
