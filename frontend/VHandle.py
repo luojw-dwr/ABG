@@ -6,6 +6,8 @@ sys.setrecursionlimit(100000)
 
 import logging
 
+logger = logging.getLogger("ABG_VHandle")
+
 class VHandle:
     def __init__(self, vnode_root, vnodes_pe, vnodes_fifo, vnodes_fifoInst):
         self.vnode_root      = vnode_root
@@ -14,17 +16,17 @@ class VHandle:
         self.vnodes_fifo     = vnodes_fifo
         self.vnodes_fifoInst = vnodes_fifoInst
     def toCustomizedNames(self):
-        logging.info(f"Original Top Module Name: {self.vnode_moduleDef.name}")
+        logger.info(f"Original Top Module Name: {self.vnode_moduleDef.name}")
         self.vnode_moduleDef.name += "_postABG"
-        logging.info(f"Modified Top Module Name: {self.vnode_moduleDef.name}")
+        logger.info(f"Modified Top Module Name: {self.vnode_moduleDef.name}")
         for vnode_fifoInst in self.vnodes_fifoInst:
             vnode_fifo = next(filter(lambda node : isinstance(node, vast.Instance), vnode_fifoInst.children()))
             assert(vnode_fifoInst.module == vnode_fifo.module)
-            logging.info(f"Original FIFO Module Name for Instance {vnode_fifo.name}: {vnode_fifo.module}")
+            logger.info(f"Original FIFO Module Name for Instance {vnode_fifo.name}: {vnode_fifo.module}")
             vnode_fifoInst.module = vnode_fifo.name + "_M"
             vnode_fifo.module = vnode_fifo.name + "_M"
             assert(vnode_fifoInst.module == vnode_fifo.module)
-            logging.info(f"Modified FIFO Module Name for Instance {vnode_fifo.name}: {vnode_fifo.module}")
+            logger.info(f"Modified FIFO Module Name for Instance {vnode_fifo.name}: {vnode_fifo.module}")
     def toRTL(self):
         # may involve deep recursion...
         # due to impl. of pyverilog ASTCodeGenerator ...
