@@ -1,5 +1,6 @@
 class DataflowVertex:
     def __init__(self, v_mg):
+        self.name = v_mg.name
         self.v_mg = v_mg
     def __repr__(self):
         return f"DataflowVertex(v_mg={self.v_mg})"
