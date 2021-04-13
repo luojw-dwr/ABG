@@ -7,7 +7,7 @@ sys.setrecursionlimit(100000)
 import logging
 
 logger = logging.getLogger("ABG_VHandle")
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 logHandler = logging.StreamHandler()
 logHandler.setFormatter(logging.Formatter(logging.BASIC_FORMAT, None))
 logger.addHandler(logHandler)

@@ -10,13 +10,13 @@ def moduleGraphToDataflowGraph(mg):
     E_DG_ds_as_dict = dict()
     w_DG_as_dict = dict()
     for e_mg in mg.E:
-        e_dg_srcIdx = v_mg2idx[mg.V_dict[e_mg.instance_read_name]]
-        e_dg_dstIdx = v_mg2idx[mg.V_dict[e_mg.instance_write_name]]
+        e_dg_srcIdx = v_mg2idx[mg.V_dict[e_mg.instance_write_name]]
+        e_dg_dstIdx = v_mg2idx[mg.V_dict[e_mg.instance_read_name]]
         if e_dg_srcIdx < e_dg_dstIdx:
             e_dg_sdIdx = (e_dg_srcIdx, e_dg_dstIdx)
             e_DG_sd = E_DG_sd_as_dict.get(e_dg_sdIdx, [])
             e_DG_sd.append(e_mg)
-            e_DG_sd_as_dict[e_dg_sdIdx] = e_DG_sd
+            E_DG_sd_as_dict[e_dg_sdIdx] = e_DG_sd
             e_DG_ds = E_DG_ds_as_dict.get(e_dg_sdIdx, [])
             E_DG_ds_as_dict[e_dg_sdIdx] = e_DG_ds
             w_DG_as_dict[e_dg_sdIdx] = w_DG_as_dict.get(e_dg_sdIdx, 0) + e_mg.width

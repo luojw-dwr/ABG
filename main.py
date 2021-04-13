@@ -4,6 +4,7 @@ from transform.ModuleGraphToDataflowGraph import *
 from transform.GridGraphToSlotGraph import *
 from floorplan.AbgESolver import AbgESolver
 from transform.DataflowGraphToLatencyGraph import *
+from pipeline.LatRebSolver import LatRebSolver
 
 import numpy as np
 
@@ -29,8 +30,12 @@ logger.info("[Op Phase] Solve AbgE problem.")
 PhiV, PhiE = abgESolver.solve()
 vMap, eMap = abgESolver.resolveMap(PhiV, PhiE)
 
-logger.info("[Op Phase] Construct LatRebal problem.")
+logger.info("[Op Phase] Construct LatReb problem.")
 lg_raw = dataflowGraphToLatencyGraph(dg, sg, eMap)
+latRebSolver = LatRebSolver(lg_raw)
+logger.info("[Op Phase] Solve LatReb problem.")
+S, B = latRebSolver.solve()
+print(S, B)
 
 logger.info("[Op Phase] Generate optimized RTL.")
 vhandle.toCustomizedNames()
