@@ -33,6 +33,7 @@ class LatRebSolver:
             W[i, j] * B[i, j]
             for j in range(nV_LG)
             for i in range(nV_LG)
+            if W[i, j] > 0
         ])
         m.setObjective(loss, GRB.MINIMIZE)
         m.optimize()

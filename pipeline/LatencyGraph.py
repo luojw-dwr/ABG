@@ -16,10 +16,8 @@ class LatencyEdge:
 class LatencyVertex:
     def __init__(self, name):
         self.name = name
-        self.sourceNames = deque()
-        self.sinkNames = deque()
     def __repr__(self):
-        return f"LatencyVertex(name={self.name}, sourceNames={self.sourceNames}, sinkNames={self.sinkNames})"
+        return f"LatencyVertex(name={self.name})"
 
 class LatencyGraph:
     def __init__(self):
@@ -37,5 +35,3 @@ class LatencyGraph:
         e = LatencyEdge(comp, srcName, dstName, w, lat, bal)
         self.E.append(e)
         self.Edict[(srcName, dstName)] = e
-        self.Vdict[srcName].sinkNames.append(dstName)
-        self.Vdict[dstName].sourceNames.append(srcName)
