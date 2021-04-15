@@ -5,12 +5,13 @@ from gurobipy import GRB
 class LatRebSolver:
     def __init__(self, lg):
         self.lg = lg
+        self.v2idx = {v : vIdx for (vIdx, v) in enumerate(lg.V)}
     def solve(self):
         lg = self.lg
+        v2idx = self.v2idx
         lg.V = list(lg.V)
         lg.E = list(lg.E)
         nV_LG = len(lg.V)
-        v2idx = {v : vIdx for (vIdx, v) in enumerate(lg.V)}
         L = np.zeros((nV_LG, nV_LG), dtype=np.int)
         W = np.zeros((nV_LG, nV_LG), dtype=np.int)
         for e_LG in lg.E:
@@ -41,3 +42,11 @@ class LatRebSolver:
         solution_S = solution[:nV_LG]
         solution_B = solution[nV_LG:].reshape((nV_LG, nV_LG))
         return solution_S, solution_B
+    def resolveBal(self, S, B):
+        lg = self.lg
+        v2idx = self.v2idx
+        for e_LG in lg.E:
+            srcIdx = v2idx[lg.Vdict[e_LG.srcName]]
+            dstIdx = v2idx[lg.Vdict[e_LG.dstName]]
+            e_LG.bal = B[srcIdx, dstIdx]
+        return lg

@@ -58,22 +58,31 @@ logger.info("[Op Phase] Solve AbgE problem.")
 PhiV, PhiE = abgESolver.solve()
 vMap, eMap = abgESolver.resolveMap(PhiV, PhiE)
 
-logger.info("[Op Phase] Store AbgE solution.")
 with open("build/yaml/AbgE_vMap.yaml", 'w') as f:
     yaml.dump({
         v_DG.name : v_SG.name
-    for (v_DG, v_SG) in vMap.items()}, f)
+        for (v_DG, v_SG) in vMap.items()
+    }, f)
 with open("build/yaml/AbgE_eMap.yaml", 'w') as f:
     yaml.dump({
         (dg.V[e_DG.srcIdx].name, dg.V[e_DG.dstIdx].name) : (sg.V[e_SG.srcIdx].name, sg.V[e_SG.dstIdx].name)
-    for (e_DG, e_SG) in eMap.items()}, f)
+        for (e_DG, e_SG) in eMap.items()
+    }, f)
 
 logger.info("[Op Phase] Construct LatReb problem.")
 lg_raw = dataflowGraphToLatencyGraph(dg, sg, eMap)
 latRebSolver = LatRebSolver(lg_raw)
 logger.info("[Op Phase] Solve LatReb problem.")
 S, B = latRebSolver.solve()
-print(S, B)
+lg_bal = latRebSolver.resolveBal(S, B)
+
+logger.info("[Op Phase] Store LatReb solution.")
+with open("build/yaml/LatReb.yaml", 'w') as f:
+    yaml.dump({
+        e_MG_name : e_LG.bal
+        for e_LG in lg_bal.E
+        for e_MG_name in e_LG.components
+    }, f)
 
 logger.info("[Op Phase] Generate optimized top RTL.")
 vhandle.toCustomizedNames()
