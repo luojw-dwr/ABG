@@ -12,6 +12,7 @@ from transform.GridGraphToSlotGraph import *
 from floorplan.AbgESolver import AbgESolver
 from transform.DataflowGraphToLatencyGraph import *
 from pipeline.LatRebSolver import LatRebSolver
+from backend.LatencyGraphToBufferSpec import *
 
 import numpy as np
 
@@ -79,9 +80,9 @@ lg_bal = latRebSolver.resolveBal(S, B)
 logger.info("[Op Phase] Store LatReb solution.")
 with open("build/yaml/LatReb.yaml", 'w') as f:
     yaml.dump({
-        e_MG_name : e_LG.bal
+        e_MG.name : e_LG.bal
         for e_LG in lg_bal.E
-        for e_MG_name in e_LG.components
+        for e_MG in e_LG.components
     }, f)
 
 logger.info("[Op Phase] Generate optimized top RTL.")
@@ -93,14 +94,14 @@ with open(f"build/verilog/{top_module_name}.v", 'w') as f:
     f.write(rtl)
 
 logger.info("[Op Phase] Generate cross-die buffer specifications.")
-buffer_specs = "NOT IMPLEMENTED"
+buffer_specs = latencyGraphToBufferSpec(lg_bal)
 
 logger.info("[Op Phase] Store cross-die buffer specifications.")
 with open(f"build/csv/bufferspecs.csv", 'w') as f:
     f.write(buffer_specs)
 
 logger.info("[Op Phase] Generate cross-die buffer RTLs.")
-#execAndEcho("cp build/csv/bufferspecs.csv chisel3/bvhlsfifo/hw/req.csv")
+execAndEcho("cp build/csv/bufferspecs.csv chisel3/bvhlsfifo/hw/req.csv")
 execAndEcho("make -C chisel3/bvhlsfifo/")
 
 logger.info("[Op Phase] Store cross-die buffer RTLs.")
