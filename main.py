@@ -13,6 +13,7 @@ from floorplan.AbgESolver import AbgESolver
 from transform.DataflowGraphToLatencyGraph import *
 from pipeline.LatRebSolver import LatRebSolver
 from backend.LatencyGraphToBufferSpec import *
+from backend.AbgVMapToTcl import *
 
 import numpy as np
 
@@ -116,8 +117,11 @@ logger.info("[Op Phase] Copy coarse pre-floorplan constraint.")
 execAndEcho(f"cp {path_prefloorplan_tcl} build/tcl/prefloorplan.tcl")
 
 logger.info("[Op Phase] Generate PE floorplan constraints.")
+pe_constr = abgVMapToTcl("pfm_top_i/dynamic_region/.*/inst/", vMap)
 
 logger.info("[Op Phase] Store PE floorplan constraints.")
+with open("build/tcl/pe_constr.tcl", 'w') as f:
+    f.write(pe_constr)
 
 logger.info("[Op Phase] Generate cross-die buffer floorplan constraints.")
 
