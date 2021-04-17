@@ -80,7 +80,7 @@ lg_bal = latRebSolver.resolveBal(S, B)
 logger.info("[Op Phase] Store LatReb solution.")
 with open("build/yaml/LatReb.yaml", 'w') as f:
     yaml.dump({
-        e_MG.name : e_LG.bal
+        e_MG.name : int(e_LG.bal)
         for e_LG in lg_bal.E
         for e_MG in e_LG.components
     }, f)
