@@ -45,6 +45,8 @@ class LatRebSolver:
     def resolveBal(self, S, B):
         lg = self.lg
         v2idx = self.v2idx
+        for (vIdx, v_LG) in enumerate(lg.V):
+            v_LG.lat = S[vIdx]
         for e_LG in lg.E:
             srcIdx = v2idx[lg.Vdict[e_LG.srcName]]
             dstIdx = v2idx[lg.Vdict[e_LG.dstName]]

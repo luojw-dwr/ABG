@@ -16,8 +16,9 @@ class LatencyEdge:
 class LatencyVertex:
     def __init__(self, name):
         self.name = name
+        self.lat = -1
     def __repr__(self):
-        return f"LatencyVertex(name={self.name})"
+        return f"LatencyVertex(name={self.name}, lat={self.lat})"
 
 class LatencyGraph:
     def __init__(self):

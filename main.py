@@ -78,9 +78,14 @@ S, B = latRebSolver.solve()
 lg_bal = latRebSolver.resolveBal(S, B)
 
 logger.info("[Op Phase] Store LatReb solution.")
-with open("build/yaml/LatReb.yaml", 'w') as f:
+with open("build/yaml/LatReb_vLat.yaml", 'w') as f:
     yaml.dump({
-        e_MG.name : int(e_LG.bal)
+        v_LG.name : int(v_LG.lat)
+        for v_LG in lg_bal.V
+    }, f)
+with open("build/yaml/LatReb_eLatBal.yaml", 'w') as f:
+    yaml.dump({
+        e_MG.name : {"lat": int(e_LG.lat), "bal": int(e_LG.bal)}
         for e_LG in lg_bal.E
         for e_MG in e_LG.components
     }, f)
