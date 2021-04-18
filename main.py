@@ -14,6 +14,7 @@ from transform.DataflowGraphToLatencyGraph import *
 from pipeline.LatRebSolver import LatRebSolver
 from backend.LatencyGraphToBufferSpec import *
 from backend.AbgVMapToTcl import *
+from backend.DistributeLatencyToGrid import *
 
 import numpy as np
 
@@ -124,5 +125,8 @@ with open("build/tcl/pe_constr.tcl", 'w') as f:
     f.write(pe_constr)
 
 logger.info("[Op Phase] Generate cross-die buffer floorplan constraints.")
+buf_constr = distributeLatencyToGridAsTcl("pfm_top_i/dynamic_region/.*/inst/", lg_bal, dg, gg, vMap)
 
 logger.info("[Op Phase] Store cross-die buffer floorplan constraints.")
+with open("build/tcl/buf_constr.tcl", 'w') as f:
+    f.write(buf_constr)
