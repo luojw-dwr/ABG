@@ -4,3 +4,5 @@ build
 parser.out
 parsetab.py
 *.swp
+run_script_map.dat
+*.log
