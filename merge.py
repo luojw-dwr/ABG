@@ -23,6 +23,9 @@ with open(f"build/merged/{proj_name}/solution/solution_data.json", 'r') as f:
 del solution_data_json["Files"]["Vhdl"]
 for vname in os.listdir("build/verilog/"):
     solution_data_json["Files"]["Verilog"].append(f"impl/verilog/{vname}")
+solution_data_json["Files"]["CSource"] = ["src/kernel_kernel_new.cpp"]
+os.system("mkdir build/merged/src")
+os.system("touch build/merged/sec/kernel_kernel_new.cpp")
 
 with open(f"build/merged/{proj_name}/solution/solution_data.json", 'w') as f:
     f.write(json.dumps(solution_data_json, indent=True))
